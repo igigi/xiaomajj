@@ -7,7 +7,7 @@ module API
 
         desc "Create a record."
         params do
-          requires :audio_url, type: String, desc: "audio url."
+          requires :audio_url, type: Rack::Multipart::UploadedFile, desc: "audio url"
           requires :audio_length, type: String, desc: "audio length"
           requires :question_id, type: Integer, desc: "question ID"
           requires :user_id, type: Integer, desc: "user ID"

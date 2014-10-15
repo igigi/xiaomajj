@@ -1,3 +1,3 @@
 class OpinionSerializer < ActiveModel::Serializer
-  attributes :id
+  attributes :id, :content
 end

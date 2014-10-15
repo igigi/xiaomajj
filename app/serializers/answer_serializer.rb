@@ -1,3 +1,3 @@
 class AnswerSerializer < ActiveModel::Serializer
-  attributes :id
+  attributes :id, :audio_url, :audio_length, :tip
 end

@@ -2,11 +2,8 @@
 
 FactoryGirl.define do
   factory :user do
-    origin "MyString"
-    open_id "MyString"
+    login "MyString"
+    email "MyString"
     password "MyString"
-    auth_token "MyString"
-    nickname "MyString"
-    captcha "MyString"
   end
 end

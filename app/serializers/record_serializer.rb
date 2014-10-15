@@ -1,3 +1,3 @@
 class RecordSerializer < ActiveModel::Serializer
-  attributes :id
+  attributes :id, :audio_url, :audio_length
 end

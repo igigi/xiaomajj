@@ -4,9 +4,12 @@ module API
       include API::V1::Defaults
 
       resource :questions do
-        desc "Return all questions"
+        desc "Return current month questions"
+        params do
+          requires :month, type: String, desc: "search month"
+        end
         get "", root: :questions do
-          Question.all.select("id", "month").group_by &:month
+          Question.where(month: params[:month]).ids
         end
 
         desc "Return a question"

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141011072919) do
+ActiveRecord::Schema.define(version: 20141015053343) do
 
   create_table "active_admin_comments", force: true do |t|
     t.string   "namespace"
@@ -57,6 +57,17 @@ ActiveRecord::Schema.define(version: 20141011072919) do
 
   add_index "answers", ["question_id"], name: "index_answers_on_question_id", using: :btree
 
+  create_table "api_keys", force: true do |t|
+    t.string   "access_token"
+    t.datetime "expires_at"
+    t.integer  "user_id"
+    t.boolean  "active"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "api_keys", ["user_id"], name: "index_api_keys_on_user_id", using: :btree
+
   create_table "opinions", force: true do |t|
     t.string   "content"
     t.integer  "user_id"
@@ -91,12 +102,9 @@ ActiveRecord::Schema.define(version: 20141011072919) do
   add_index "records", ["user_id"], name: "index_records_on_user_id", using: :btree
 
   create_table "users", force: true do |t|
-    t.string   "origin"
-    t.string   "open_id"
+    t.string   "login"
+    t.string   "email"
     t.string   "password"
-    t.string   "auth_token"
-    t.string   "nickname"
-    t.string   "captcha"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

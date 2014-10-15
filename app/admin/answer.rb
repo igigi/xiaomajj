@@ -1,5 +1,5 @@
 ActiveAdmin.register Answer do
-  permit_params :id, :audio_url, :audio_length
+  permit_params :id, :audio_url, :audio_length, :question_id, :tip
 
 
   # See permitted parameters documentation:

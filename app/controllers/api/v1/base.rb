@@ -6,6 +6,8 @@ module API
       mount API::V1::Questions
       mount API::V1::Records
       mount API::V1::Opinions
+      mount API::V1::Auth
+      mount API::V1::Users
 
       add_swagger_documentation(
         api_version: "v1",

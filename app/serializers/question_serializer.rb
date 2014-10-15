@@ -3,4 +3,16 @@ class QuestionSerializer < ActiveModel::Serializer
   has_many :answers
   has_many :records
   has_many :opinions
+
+  def answers
+  	object.answers.limit(3)
+  end
+
+  def records
+  	object.records.limit(3)
+  end
+
+  def opinions
+  	object.opinions.limit(8)
+  end
 end
