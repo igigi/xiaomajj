@@ -17,7 +17,7 @@
 			<a href="#" class="color_blue">点题直播</a>
 			<a href="#" class="color_green">历年题库</a>
 		</div>
-		<div class="zhuanghao fr"><a>登录</a>&nbsp;<a>注册</a></div>
+		<div class="zhuanghao fr"><a id="logbtn">登录</a></div>
 		<div class="clearfix"></div>
 	</div>
 </div>
@@ -25,18 +25,17 @@
 <div class="login_us clearfix">
 	<div class="content">
 		<div class="form_us fl">
-			<form>
-				<p>
-					<input type="text" name="yourname" class="us_text" />
-					<input type="password" name="yourpw" class="us_text" />
-					<input type="submit" name="登录" value="登录" class="us_sub1" />
-					<input type="submit" name="注册" value="注册" class="us_sub1 us_sub2" />
-				</p>
-				<p class="us_p">
-					<input type="checkbox" name="checkbox1" value="checkbox" class="us_radio" style="vertical-align:-2px;" />记住我  
-					<a href="#" class="forget" style="display:none;">忘记密码</a>
-				</p>
-			</form>
+			<p>
+				<input id="useremail" type="text" name="email" class="us_text" />
+				<input id="userpwd" type="password" name="pwd" class="us_text" />
+				<input id="dlbtn" type="button" name="登录" value="登录" class="us_sub1" />
+				<input id="zcbtn" type="button" name="注册" value="注册" class="us_sub1 us_sub2" />
+			</p>
+			<p class="us_p" style="display:none;">
+				<input type="checkbox" name="checkbox1" value="checkbox" class="us_radio" style="vertical-align:-2px;" />记住我  
+				<a href="#" class="forget" >忘记密码</a>
+			</p>
+			<p id="msg" style="color:red"></p>
 		</div>
 		<div class="ciyu_us fr">加入我们，发现考托很简单！</div>
 		<div class="clearfix"></div>
@@ -45,7 +44,7 @@
 <!--main-->
 <div class="content sidebar">
 	<div class="sidebar_a fl">
-		<h2>10月重点口语<span id="next_month" style="width:40px">></span></h2>
+		<h2><p id="qmonth"></p><span id="next_month" style="width:40px">></span></h2>
 		<ul id="q_list">
 			
 		</ul>
@@ -57,8 +56,8 @@
 				<dt class="fl">
 					<p id='q_content'>One is always on a strange road, watching strange scenery and listening to strange music. Then one day, you will find that the things you try hard to forget are already gone. </p>
                     <div class="video_start fl">
-                        <a>
-                            <b class="fl" id="start_rec"><img src="images/xm_video_but1.png" /></b>
+                        <a style="cursor:default;">
+                            <b class="fl" id="start_rec" style="cursor:pointer;"><img src="images/xm_video_but1.png" /></b>
                             <span id="timer" class="fr">开始练习</span>
                         </a>
                         
@@ -118,7 +117,7 @@
 
 <!-- 录音提交表单START -->
 <form id="uploadForm" name="uploadForm" method="post" action="http://192.168.1.115:4000/api/v1/records" enctype="mutltipart/form-data">
-    <input name="user_id" id="user_id" value="1" type="hidden"/>
+    <input name="user_id" id="user_id" type="hidden"/>
     <input name="question_id" id="question_id" type="hidden"/>
     <input name="audio_length" id="audio_length" type="hidden"/>
 </form>
@@ -136,9 +135,8 @@
 <script type="text/javascript" src="javascript/main.js"></script>
 <script type="text/javascript" src="javascript/jquery.nicescroll.min.js"></script>
 <script type="text/javascript">
-	//q_id=题目id,视频链接,用户id,录音状态符,录音计时器,录音时间,录制长度,播放长度,音频播放计时器,音频播放器状态,当前播放的链接
-	var q_id,q_video_url,userid,rec_state,timer,tsec,record_length,record_play_length,audioPlayTimer,audioPlayState,currentUrl;
-	userid=1;
+	//q_id=题目id,视频链接,用户id,录音状态符,录音计时器,录音时间,录制长度,播放长度,音频播放计时器,音频播放器状态,当前播放的链接,当前题目月份
+	var q_id,q_video_url,userid,rec_state,timer,tsec,record_length,record_play_length,audioPlayTimer,audioPlayState,currentUrl,currentDataMonth;
 	rec_state=0;
 	audioPlayState=0;
 	//--倒计时START--
@@ -206,26 +204,20 @@
 			}
 			objli.attr("class","sidebar_border");
 			$("#q_list").append(objli);
-			
+			var arr = dateTime.split('.');
+		    $("#qmonth").html(arr[1]+"月重点口语");
+		    
 			//默认选第一题
 			var firstQ=$("#q_list").find("li").first().find("a").first();
 			getQuestion(firstQ);
 
-			//--选题
-			$(".question").click(function(){
-				
-				getQuestion($(this));
-				
-			});
-			
-			//--end 选题--
 			
 		});
 	}
 	 /**
      * 获取下一个月
      *
-     * @date 格式为yyyy-mm-dd的日期，如：2014-01-25
+     * @date 格式为yyyy.mm的日期，如：2014.01
      */        
     function getNextMonth(date) {
         var arr = date.split('.');
@@ -312,11 +304,16 @@
 		
 	}
 	$(function(){
-		
+		$("#next_month").click(function(){
+			$("#q_list").html('');
+			getQuestionList(getNextMonth(currentDataMonth));
+			currentDataMonth = getNextMonth(currentDataMonth);
+		});
 		//--录音状态切换 start----
 		$("#start_rec").click(function(){
 			
 			if (typeof(q_id) != "undefined" && typeof(userid)!="undefined") {
+				$("#question_id").val(q_id);
 				//state==0 未录音
 				if(rec_state==0){
 					FWRecorder.record('audio', userid+"-"+q_id+'-audio.wav');
@@ -326,6 +323,7 @@
 					FWRecorder.stopRecording('audio');
 					clearTimeout(timer);
 					record_play_length= record_length;
+					
 					$("#audio_length").val(record_length);
 					rec_state=2;
 					$("#rerecord").css("display","block");
@@ -362,8 +360,9 @@
 						$("#checkflash").show();
 					}
 				}
-					
-				
+			}else{
+				$(".login_us").slideToggle(100);
+				$("#msg").html("请先登录");
 			}
 			
 		});
@@ -437,9 +436,16 @@
 		//--关闭视频层END--
 		
 		
+		//--选题
+		$('body').on('click','.question',function(){
+			getQuestion($(this));
+		});
+		//--end 选题--
+		
 		
 		var myDate = new Date();
-		getQuestionList(getNextMonth(myDate.getFullYear()+"."+myDate.getMonth()));
+		currentDataMonth=getNextMonth(myDate.getFullYear()+"."+myDate.getMonth());
+		getQuestionList(currentDataMonth);
 		$('#q_list').niceScroll({cursorborder:"",cursorcolor:"rgb(243, 118, 58)",boxzoom:false});
 		swfobject.embedSWF("swf/soundPlay.swf", "audioPlayer", "10", "10", "10.0.0", "swf/expressInstall.swf");
 		
@@ -481,6 +487,43 @@
 		});
 		
 		//--录音播放END--
+		
+		
+		//登录--
+		$("#logbtn").click(function(){
+			$(".login_us").slideToggle(100);
+		})
+		$("#dlbtn").click(function(){
+			var email =$("#useremail").val().trim();
+			var pwd = $("#userpwd").val().trim();
+			$("#msg").html("");
+			if(email.length==0){
+				$("#msg").html("请填写用户名~");
+				return ;
+			}
+			if(pwd.length==0){
+				$("#msg").html("请填写密码~");
+			}
+			$.ajax({ url: "http://192.168.1.115:4000/api/v1/auth/login",
+				data:{login:email,password:pwd}, 
+				type:'post',
+				success: function(data){
+		        	$(".login_us").slideToggle(100);
+		        	$(".zhuanghao").html(email);
+		        	userid = data.user_id;
+		        	$("#user_id").val(userid);
+		      	},
+		      	error:function(data){
+		      		$("#msg").html("失败，确认用户名密码是否正确");
+		      	}
+			});
+			
+		})
+		//注册--
+		$("#zcbtn").click(function(){
+			window.open("xmjj_register.html");  
+		});
+		
 	});
 </script>
 </body>

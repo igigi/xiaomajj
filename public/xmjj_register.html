@@ -14,26 +14,90 @@
 		<div class="zc_form">
 			<div class="zcform_left fl">
 				<h2>欢迎加入小马机经</h2>
-				<form class="zcform">
-					<p><span>邮箱</span><input type="text" name="youryx" class="zc_text" /></p>
-					<p><span>密码</span><input type="password" name="yourpw" class="zc_text" /></p>
-					<p><span>确认密码</span><input type="password" name="checkpw" class="zc_text" /></p>
-					
-					<p><span></span><a href="#"><input type="submit" name="注册" value="注册" class="zc_sub" /></a></p>
-				</form>
+				<div class="zcform">
+					<p><span>邮箱</span><input type="text" id="email" name="email" class="zc_text" /><span id="email_check" style="color:red;font-size:10px;width:200px;"></span></p>
+					<p><span>密码</span><input type="password" id="pwd" name="yourpw" class="zc_text" /><span id="pwd_check" style="color:red;font-size:10px;width:200px;"></span></p>
+					<p><span>确认密码</span><input type="password" id="pwds" name="checkpw" class="zc_text" /><span id="pwds_check" style="color:red;font-size:10px;width:200px;"></span></p>
+					<p><span></span><span id="msg" style="color:red;font-size: 10px;width:300px;"></span></p>
+					<p><span></span><a href="#"><input type="button" name="zc" id="zcbtn" value="注册" class="zc_sub" /></a></p>
+				</div>
 			</div>
 			<div class="zc_right fr">
-				>已有小马机经账号？<a href="#">直接登录</a>
+				>已有小马机经账号？<a href="xmjj.html">直接登录</a>
 			</div>
 			<div class="clearfix"></div>
 		</div>
 		<div class="copyright clearfix">
 			<p class="fl">&copy2005-2014 douban.com.all</p>
 			<div class="help fr">
-				<a href="#">帮助中心</a><a href="#">帮助中心</a>
+				<a href="#">帮助中心</a>
 			</div>
 		</div>
 	</div>
 </div>
+<script type="text/javascript" src="javascript/jquery.min.js"> </script>
+<script type="text/javascript">
+	$(function(){
+		 //文本框失去焦点后
+        $('.zc_text').blur(function(){
+             var $parent = $(this).parent();
+             $parent.find(".formtips").remove();
+             //验证用户名
+             if( $(this).is('#pwd') ){
+                    if( this.value=="" || this.value.length < 6 ){
+                        var errorMsg = '请输入至少6位的密码.';
+                        $("#pwd_check").html(errorMsg);
+                    }else{
+                    	$("#pwd_check").html('');
+                    }
+             }
+             if($(this).is('#pwds') ){
+            	 var pwd = $("#pwd").val();
+            	 if( this.value!=pwd){
+                     var errorMsg = '两次密码不一致';
+                     $("#pwds_check").html(errorMsg);
+                 }else{
+                 	$("#pwds_check").html('');
+                 }
+             }
+             //验证邮件
+             if( $(this).is('#email') ){
+                if( this.value=="" || ( this.value!="" && !/.+@.+\.[a-zA-Z]{2,4}$/.test(this.value) ) ){
+                      var errorMsg = '请输入正确的E-Mail地址.';
+                      $("#email_check").html(errorMsg);
+                }else{
+                 	$("#email_check").html('');
+                }
+             }
+        }).keyup(function(){
+           $(this).triggerHandler("blur");
+        }).focus(function(){
+             $(this).triggerHandler("blur");
+        });//end blur
+		
+		$("#zcbtn").click(function(){
+			var email_check= $("#email_check").html().length;
+			var pwd_check = $("#pwd_check").html().length;
+			var pwds_check=$("#pwds_check").html().length;
+			if(email_check>0 || pwd_check>0 || pwds_check>0){
+				return false;
+			}else{
+				var email = $("#email").val();
+				var pwd = $("#pwd").val();
+				$.ajax({ url: "http://192.168.1.115:4000/api/v1/users",
+					data:{email:email,password:pwd}, 
+					type:'post',
+					success: function(data){
+						$("#msg").html("注册成功！<a href='xmjj.html'>去登录</a>");
+			      	},
+			      	error:function(data){
+			      		alert(data.error);
+			      		$("#msg").html("注册失败，邮箱已被注册过。<a href='xmjj.html'>直接登录</a>");
+			      	}
+				});
+			}
+		});
+	});
+</script>
 </body>
 </html>

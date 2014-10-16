@@ -5,7 +5,7 @@ $(function () {
 
   var appWidth = 54;
   var appHeight = 54;
-  var flashvars = {'upload_image': '../pages/images/xm_video2.png'};
+  var flashvars = {'upload_image': './images/xm_video2.png'};
   var params = {'wmode':'transparent'};
   var attributes = {'id': RECORDER_APP_ID, 'name': RECORDER_APP_ID,style:'visibility:hidden;margin-top:30px;position: absolute;z-index: 20;float:left;'};
   swfobject.embedSWF("./swf/recorder.swf", "flashcontent", appWidth, appHeight, "11.0.0", "", flashvars, params, attributes);
@@ -54,12 +54,19 @@ $(function () {
       case "saving":
         name = arguments[1];
         console.info('saving started', name);
+        $("#timer").html("提交中...");
+        $("#recorderApp").css("visibility","hidden");
         break;
 
       case "saved":
         name = arguments[1];
         var response = arguments[2];
         console.info('saving success', name, response);
+
+		$("#timer").html("提交完成");
+
+		$("#recorderApp").css("visibility","hidden");
+
         break;
 
       case "save_failed":

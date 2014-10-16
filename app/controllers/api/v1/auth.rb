@@ -18,7 +18,7 @@ module API
 
         if user && user.authenticate(params[:password])
           key = ApiKey.create(user_id: user.id)
-          {token: key.access_token}
+          {token: key.access_token, user_id: user.id}
         else
           error!('Unauthorized.', 401)
         end

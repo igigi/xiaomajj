@@ -20,6 +20,11 @@ module API
             user_id: params[:user_id]
           })
         end
+
+        desc "Get the newest three records."
+        get do
+          Record.limit(3)
+        end
       end
     end
   end

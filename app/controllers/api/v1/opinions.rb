@@ -18,6 +18,11 @@ module API
             user_id: params[:user_id]
           })
         end
+
+        desc "Get the newest three opinions."
+        get do
+          Opinion.limit(3)
+        end
       end
     end
   end
