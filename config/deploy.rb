@@ -9,7 +9,7 @@ set :repo_url, 'git@github.com:igigi/xiaomajj.git'
 
 # Default deploy_to directory is /var/www/my_app
 # set :deploy_to, '/var/www/my_app'
-set :deploy_to, '/home/deploy/xiaomajj'
+set :deploy_to, '/home/xiaomajijing/xiaomajj2'
 
 # Default value for :scm is :git
 # set :scm, :git
@@ -40,7 +40,7 @@ set :linked_dirs, %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public
 # rvm setting
 
 set :rvm_type, :user
-set :rvm_ruby_version, 'ruby-2.1.2@xiaomajj'
+set :rvm_ruby_version, 'ruby-2.1.1@xiaomajj'
 set :default_env, { rvm_bin_path: '~/.rvm/bin' }
 SSHKit.config.command_map[:rake] = "#{fetch(:default_env)[:rvm_bin_path]}/rvm ruby-#{fetch(:rvm_ruby_version)} do bundle exec rake"
 
