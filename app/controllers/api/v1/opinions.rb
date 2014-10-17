@@ -20,8 +20,11 @@ module API
         end
 
         desc "Get the newest three opinions."
+        params do
+          requires :question_id, type: Integer, desc: "ID of question"
+        end
         get do
-          Opinion.limit(3)
+          Question.find(params[:question_id]).opinions.limit(3)
         end
       end
     end

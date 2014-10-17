@@ -4,6 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
 	<title>小马机经</title>
 	<link rel="stylesheet" type="text/css" href="style.css" />
+	
 </head>
 <body>
 <!--header-->
@@ -94,18 +95,16 @@
 				
 			</div>
 			<div class="discussion fr">
-				<h3 class="xmtf_tit"><b class="tit_ico"></b><span>最新评论</span><a href="#">发言</a></h3>
+				<h3 class="xmtf_tit"><b class="tit_ico"></b><span>最新评论</span></h3>
 				<ul>
-					<li><span>●</span><a href="#">托福总分130分飞越美22222222222222利坚美利坚坚</a></li>
-					<li><span>●</span><a href="#">托福总分130分飞越美利坚222222222222222美利坚坚</a></li>
-					<li><span>●</span><a href="#">托福总分130分飞越美利坚22222222222222美利坚坚</a></li>
-					<li><span>●</span><a href="#">托福总分130分飞越美利坚22222222222美利坚坚</a></li>
-					<li><span>●</span><a href="#">托福总分130分飞越美利坚222222222222222222美利坚坚</a></li>
-					<li><span>●</span><a href="#">托福总分130分飞越美利坚美利坚坚</a></li>
-					<li><span>●</span><a href="#">托福总分130分飞越美利坚美利坚坚</a></li>
-					<li><span>●</span><a href="#">托福总分130分飞越美利坚美利坚坚</a></li>
+					
 				</ul>
+				<div class="options fr">
+					<textarea name="opinions" class="multieditbox"></textarea>
+					<input class="us_sub1 us_sub3" id="publish" type="button" value="发表">
 			</div>
+			</div>
+			
 		</div>
 	</div>
 	<div class="clearfix"></div>
@@ -137,6 +136,7 @@
 <script type="text/javascript">
 	//q_id=题目id,视频链接,用户id,录音状态符,录音计时器,录音时间,录制长度,播放长度,音频播放计时器,音频播放器状态,当前播放的链接,当前题目月份
 	var q_id,q_video_url,userid,rec_state,timer,tsec,record_length,record_play_length,audioPlayTimer,audioPlayState,currentUrl,currentDataMonth;
+
 	rec_state=0;
 	audioPlayState=0;
 	//--倒计时START--
@@ -277,7 +277,29 @@
 		}
 		
 	}
-	
+	function getRecordsTimer(){
+		setTimeout("getRecordsTimer()", 5000);
+		if(typeof(q_id) != "undefined"){
+			$.ajax({ 
+		          type : "get", 
+		          url : "http://192.168.1.115:4000/api/v1/records?question_id="+q_id, 
+		          async : false, 
+		          success : function(result){
+		        	  getRecordsById(result);
+		          } 
+		     }); 
+		}
+	}
+	function getRecordsById(data){
+		var recordsArry = data.records;
+		$(".record .record_record").remove();
+		var recorddiv;
+		for(var i in recordsArry){
+			recorddiv = $("<div class='record_record'></div>");
+			recorddiv.append($("<div class='record_pic'><a audiourl='"+recordsArry[i].audio_url.audio_url.url+"' rlength='"+recordsArry[i].audio_length+"'><img src='images/recordpic1_jingtai.jpg'></a></div>"));
+			$(".record").append(recorddiv);
+		}
+	}
 	function buildRecords(data){
 		var recordsArry = data.question.records;
 		var recorddiv;
@@ -290,17 +312,37 @@
 		}
 		
 	}
-	
+	function getDiscussionTimer(){
+		setTimeout("getDiscussionTimer()", 5000);
+		if(typeof(q_id) != "undefined"){
+			$.ajax({ 
+		          type : "get", 
+		          url : "http://192.168.1.115:4000/api/v1/Opinions?question_id="+q_id, 
+		          async : false, 
+		          success : function(result){
+		        	  getDiscussionById(result);
+		          } 
+		     }); 
+		}
+	}
+	function getDiscussionById(data){
+		$(".discussion ul").remove();
+		var discussArry = data.Opinions;
+		var discussdiv;
+		discussdiv = $("<ul></ul>");
+		for(var i in discussArry){
+			discussdiv.append($("<li><a>"+discussArry[i].content+"</a></li>"));
+		}
+		$(".discussion h3").after(discussdiv);
+	}
 	function buildDiscussion(data){
 		var discussArry = data.question.opinions;
 		var discussdiv;
-		
-		
+		discussdiv = $("<ul></ul>");
 		for(var i in discussArry){
-			discussdiv = $("<ul></ul>");
 			discussdiv.append($("<li><a>"+discussArry[i].content+"</a></li>"));
-			$(".discussion").append(discussdiv);
 		}
+		$(".discussion h3").after(discussdiv);
 		
 	}
 	$(function(){
@@ -446,6 +488,8 @@
 		var myDate = new Date();
 		currentDataMonth=getNextMonth(myDate.getFullYear()+"."+myDate.getMonth());
 		getQuestionList(currentDataMonth);
+		getDiscussionTimer();
+		getRecordsTimer();
 		$('#q_list').niceScroll({cursorborder:"",cursorcolor:"rgb(243, 118, 58)",boxzoom:false});
 		swfobject.embedSWF("swf/soundPlay.swf", "audioPlayer", "10", "10", "10.0.0", "swf/expressInstall.swf");
 		
@@ -488,7 +532,49 @@
 		
 		//--录音播放END--
 		
+		//--展现答案
+		$('body').on('mouseover','.answer_hide',function(){
+			$(this).parent().parent().find('.answer_content').slideToggle(300);
+			$(this).attr('class','answer_show');
+		});
+		$('body').on('mouseout','.answer_show',function(){
+			$(this).parent().parent().find('.answer_content').slideToggle(300);
+			$(this).attr('class','answer_hide');
+		});
 		
+		$(".multieditbox").focus(function(){
+			$(this).animate({height:"65px",opacity:0.7},300);
+		});
+		$("#publish").click(function(){
+			if(typeof(userid)!="undefined"){
+				var contents = $(".multieditbox").val().trim();
+				if(contents.length>0){
+					$.ajax({ url: "http://192.168.1.115:4000/api/v1/Opinions",
+						data:{content:contents,user_id:userid,question_id:q_id}, 
+						type:'post',
+						success: function(data){
+							$(".multieditbox").val('');
+							$.ajax({ 
+						          type : "get", 
+						          url : "http://192.168.1.115:4000/api/v1/Opinions?question_id="+q_id, 
+						          async : false, 
+						          success : function(result){
+						        	  getDiscussionById(result);
+						          } 
+						     }); 
+				      	},
+				      	error:function(data){
+				      		alert("发布失败了~");
+				      	}
+					});
+				}
+				
+			}else{
+				$(".login_us").slideToggle(100);
+				$("#msg").html("请先登录");
+				$("#useremail").focus();
+			}
+		});
 		//登录--
 		$("#logbtn").click(function(){
 			$(".login_us").slideToggle(100);

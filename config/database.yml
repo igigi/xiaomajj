@@ -49,6 +49,6 @@ test:
 #
 production:
   <<: *default
-  database: xiaomajj_production
-  username: xiaomajj
-  password: <%= ENV['XIAOMAJJ_DATABASE_PASSWORD'] %>
+  database: xiaomajj_development
+  username: root
+  password: xiaoma

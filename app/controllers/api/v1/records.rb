@@ -22,8 +22,11 @@ module API
         end
 
         desc "Get the newest three records."
-        get do
-          Record.limit(3)
+        params do
+          requires :question_id, type: Integer, desc: "ID of question"
+        end
+        get  do
+          Question.find(params[:question_id]).records.limit(3)
         end
       end
     end
