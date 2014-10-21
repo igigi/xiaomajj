@@ -15,7 +15,7 @@
 		</div>
 		<div class="nav fl">
 			<a href="#" class="color_red">机经预测</a>
-			<a href="#" class="color_blue">点题直播</a>
+			<a href="xmjj_zbdt.html" class="color_blue">点题直播</a>
 			<a href="#" class="color_green">历年题库</a>
 		</div>
 		<div class="zhuanghao fr"><a id="logbtn">登录</a></div>
@@ -115,7 +115,7 @@
 <!-- 视频播放层END -->
 
 <!-- 录音提交表单START -->
-<form id="uploadForm" name="uploadForm" method="post" action="http://192.168.1.115:4000/api/v1/records" enctype="mutltipart/form-data">
+<form id="uploadForm" name="uploadForm" method="post" action="http://xiaomajijing.xiaoma.com/api/v1/records" enctype="mutltipart/form-data">
     <input name="user_id" id="user_id" type="hidden"/>
     <input name="question_id" id="question_id" type="hidden"/>
     <input name="audio_length" id="audio_length" type="hidden"/>
@@ -189,7 +189,7 @@
 	
 	//--根据时间获取题的列表
 	function getQuestionList(dateTime){
-		$.get("http://192.168.1.115:4000/api/v1/questions?month="+dateTime, function(result){
+		$.get("http://xiaomajijing.xiaoma.com/api/v1/questions?month="+dateTime, function(result){
 			var list="";
 			var objli=$("<li></li>");
 			var data = result.questions;
@@ -250,7 +250,7 @@
 			$("#question_id").val(q_id);
 			$.ajax({ 
 		          type : "get", 
-		          url : "http://192.168.1.115:4000/api/v1/questions/"+q_id, 
+		          url : "http://xiaomajijing.xiaoma.com/api/v1/questions/"+q_id, 
 		          async : false, 
 		          success : function(result){
 		        	  $("#q_title").html(result.question.title);
@@ -282,7 +282,7 @@
 		if(typeof(q_id) != "undefined"){
 			$.ajax({ 
 		          type : "get", 
-		          url : "http://192.168.1.115:4000/api/v1/records?question_id="+q_id, 
+		          url : "http://xiaomajijing.xiaoma.com/api/v1/records?question_id="+q_id, 
 		          async : false, 
 		          success : function(result){
 		        	  getRecordsById(result);
@@ -317,7 +317,7 @@
 		if(typeof(q_id) != "undefined"){
 			$.ajax({ 
 		          type : "get", 
-		          url : "http://192.168.1.115:4000/api/v1/Opinions?question_id="+q_id, 
+		          url : "http://xiaomajijing.xiaoma.com/api/v1/Opinions?question_id="+q_id, 
 		          async : false, 
 		          success : function(result){
 		        	  getDiscussionById(result);
@@ -549,14 +549,14 @@
 			if(typeof(userid)!="undefined"){
 				var contents = $(".multieditbox").val().trim();
 				if(contents.length>0){
-					$.ajax({ url: "http://192.168.1.115:4000/api/v1/Opinions",
+					$.ajax({ url: "http://xiaomajijing.xiaoma.com/api/v1/Opinions",
 						data:{content:contents,user_id:userid,question_id:q_id}, 
 						type:'post',
 						success: function(data){
 							$(".multieditbox").val('');
 							$.ajax({ 
 						          type : "get", 
-						          url : "http://192.168.1.115:4000/api/v1/Opinions?question_id="+q_id, 
+						          url : "http://xiaomajijing.xiaoma.com/api/v1/Opinions?question_id="+q_id, 
 						          async : false, 
 						          success : function(result){
 						        	  getDiscussionById(result);
@@ -590,7 +590,7 @@
 			if(pwd.length==0){
 				$("#msg").html("请填写密码~");
 			}
-			$.ajax({ url: "http://192.168.1.115:4000/api/v1/auth/login",
+			$.ajax({ url: "http://xiaomajijing.xiaoma.com/api/v1/auth/login",
 				data:{login:email,password:pwd}, 
 				type:'post',
 				success: function(data){
@@ -598,6 +598,7 @@
 		        	$(".zhuanghao").html(email);
 		        	userid = data.user_id;
 		        	$("#user_id").val(userid);
+		        	$(".color_blue").attr("href","xmjj_zbdt.html?email="+email);
 		      	},
 		      	error:function(data){
 		      		$("#msg").html("失败，确认用户名密码是否正确");

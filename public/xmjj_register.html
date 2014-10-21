@@ -84,14 +84,13 @@
 			}else{
 				var email = $("#email").val();
 				var pwd = $("#pwd").val();
-				$.ajax({ url: "http://192.168.1.115:4000/api/v1/users",
+				$.ajax({ url: "http://xiaomajijing.xiaoma.com/api/v1/users",
 					data:{email:email,password:pwd}, 
 					type:'post',
 					success: function(data){
 						$("#msg").html("注册成功！<a href='xmjj.html'>去登录</a>");
 			      	},
 			      	error:function(data){
-			      		alert(data.error);
 			      		$("#msg").html("注册失败，邮箱已被注册过。<a href='xmjj.html'>直接登录</a>");
 			      	}
 				});
